@@ -3,5 +3,7 @@
   <component name="Encoding" addBOMForNewFiles="with NO BOM">
     <file url="file://$PROJECT_DIR$/src/Client.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/Server.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/test/Client.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/test/Server.java" charset="GBK" />
   </component>
 </project>

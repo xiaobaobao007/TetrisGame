@@ -12,55 +12,14 @@ import java.net.Socket;
 public class Client extends JFrame {
 
     int[][][] map1 = new int[2][22][12];//地图
-    int shapes[][][] = new int[][][]{//俄罗斯方块类型
-            {{0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0},
-                    {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0}},
-            // S
-            {{0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0}},
-            // Z
-            {{1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0}},
-            // J
-            {{0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0},
-                    {1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-            // O
-            {{1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-            // L
-            {{1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
-            // T
-            {{0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}}
-    };
     private int message, i, j, xx = 4, yy = 0, score1, STOP = 1;//数据、坐标、分数、暂停
     private Timer timer;//时间间隔
-    private String host;//服务器ip地址
-    private int port;//服务器端口号
     private Socket socket, socket1;//连接客户端
     private DataInputStream dis;//数据接收
     private DataOutputStream dos;//数据传送
     private int blockType1;//方块类型
     private int turnState1;//旋转状态
     public Client() {//客户端
-        host = "localhost";//一台电脑运行就为本地ip
-        port=8081;//端口号
-        //host="10.114.11.4";
         new bmy().start();//运行客户端，连接服务器，必须先运行服务器。多线程启动
         this.setLayout(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -90,7 +49,7 @@ public class Client extends JFrame {
         public void run() {
             try {
                 newgame();
-                socket = new Socket(host, port);
+                socket = new Socket(Constant.ServerIp, Constant.ServerPort1);
                 dis = new DataInputStream(socket.getInputStream());
                 while (true) {
                     message = dis.readInt();
@@ -105,7 +64,7 @@ public class Client extends JFrame {
                     } else if (message == 5) {
                         for (int a = 0; a < 4; a++) {
                             for (int b = 0; b < 4; b++) {
-                                if (shapes[blockType1][turnState1][a * 4 + b] == 1) {
+                                if (Constant.shapes[blockType1][turnState1][a * 4 + b] == 1) {
                                     map1[0][yy + a][xx + b + 1] = 1;
                                     map1[1][yy + a][xx + b + 1] = blockType1;
                                 }
@@ -184,7 +143,7 @@ public class Client extends JFrame {
         public void paint(Graphics g) {//绘图
             super.paint(g);
             for (j = 0; j < 16; j++) {
-                if (shapes[blockType1][turnState1][j] == 1) {
+                if (Constant.shapes[blockType1][turnState1][j] == 1) {
                     g.setColor(Color.pink);
                     g.drawRect((j % 4 + xx + 1) * 30, (j / 4 + yy) * 30, 30, 30);
                     g.setColor(Color.blue);
@@ -261,7 +220,7 @@ public class Client extends JFrame {
         //游戏开始包
         public TetrisPanel() {
             try {
-                socket1 = new Socket(host, 7777);
+                socket1 = new Socket(Constant.ServerIp, Constant.ServerPort2);
                 dos = new DataOutputStream(socket1.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -394,7 +353,7 @@ public class Client extends JFrame {
         private void add(int x, int y, int blockType, int turnState) {
             for (int a = 0; a < 4; a++) {
                 for (int b = 0; b < 4; b++) {
-                    if (shapes[blockType][turnState][a * 4 + b] == 1) {
+                    if (Constant.shapes[blockType][turnState][a * 4 + b] == 1) {
                         map[0][x + b + 1][y + a] = 1;
                         map[1][x + b + 1][y + a] = blockType;
                     }
@@ -453,7 +412,7 @@ public class Client extends JFrame {
         private int crash(int x, int y, int blockType, int turnState) {
             for (int a = 0; a < 4; a++) {
                 for (int b = 0; b < 4; b++) {
-                    if ((shapes[blockType][turnState][a * 4 + b] & map[0][x + b + 1][y + a]) == 1) {
+                    if ((Constant.shapes[blockType][turnState][a * 4 + b] & map[0][x + b + 1][y + a]) == 1) {
                         return 0;//碰撞
                     }
                 }
@@ -466,7 +425,7 @@ public class Client extends JFrame {
             super.paint(g);
             g.setColor(new Color(153, 51, 205));
             for (int j = 0; j < 16; j++) {
-                if (shapes[blockType][turnState][j] == 1) {
+                if (Constant.shapes[blockType][turnState][j] == 1) {
                     g.setColor(Color.pink);
                     g.drawRect((j % 4 + x + 1) * 30, (j / 4 + y) * 30, 30, 30);
                     g.setColor(Color.BLUE);
@@ -525,7 +484,7 @@ public class Client extends JFrame {
                     }
                 }
                 for (int m = 0; m < 16; m++) {
-                    if (shapes[lastblockType][lastturnState][m] == 1) {
+                    if (Constant.shapes[lastblockType][lastturnState][m] == 1) {
                         g.setColor(Color.pink);
                         g.drawRect((m % 4) * 25 + 450, (m / 4) * 25 + 80, 25, 25);
                         g.setColor(Color.GREEN);
