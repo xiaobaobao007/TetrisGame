@@ -5,8 +5,12 @@ package test;
  */
 class Constant {
     static String ServerIp = "localhost";//服务器地址
-    static int ServerPort1 = 8081;//服务器开放端口号
-    static int ServerPort2 = 8082;//服务器开放端口号
+    static int ServerPort = 8081;//服务器开放端口号
+    static int BlockDelay = 1000;//方块下落延迟
+    static int JFrame_Width = 1200;
+    static int JFrame_Height = 800;
+    static int Panel_Width = 500;
+    static int Panel_Height = JFrame_Height;
 
     /**
      * 俄罗斯方块七种类型和四种变换形态
