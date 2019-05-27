@@ -8,24 +8,36 @@ import java.io.IOException;
 public class GamePanel extends JPanel {//客户端画面
 
     private DataOutputStream dos;//数据发送
+    private boolean canDos;//队友发来的操作后禁止再发送
 
     private int blockType, lastBlockType = 0;//方块类型
     private int turnState, lastTurnState = 0;//旋转状态
     private int x;//当前方块的坐标
     private int y;//当前方块的坐标
-    private int map[][][] = new int[2][13][23];//地图：12列22行。为防止越界，数组开成：13列23行
+    private int[][][] map = new int[2][13][23];//地图：12列22行。为防止越界，数组开成：13列23行
     private int delay;//游戏方块下落速度
     private int score = 0;//分数
 
-    GamePanel(DataOutputStream dos) {
+    GamePanel(DataOutputStream dos, boolean canDos) {
         this.dos = dos;
-
+        this.canDos = canDos;
+        newGame();
         new Thread(() -> {
-            //
+            while (true) {
+                down();
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }).start();
     }
 
-    public void sendMsg(int... parm) {
+    private void sendMsg(int... parm) {
+        if (!canDos || dos == null) {
+            return;
+        }
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         for (int i : parm) {
             methodName += "_" + i;
@@ -56,11 +68,7 @@ public class GamePanel extends JPanel {//客户端画面
     private void nextBlock() {
         blockType = lastBlockType;
         turnState = lastTurnState;
-//        try {
-//            dos.writeInt((blockType + 1) * 10 + turnState);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        sendMsg(blockType, turnState);
         lastBlockType = (int) (Math.random() * 1000) % 7;
         lastTurnState = (int) (Math.random() * 1000) % 4;
         x = 4;
@@ -83,8 +91,6 @@ public class GamePanel extends JPanel {//客户端画面
         }
     }
 
-    //键盘操作
-
     public void down() {
         if (crash(x, y + 1, blockType, turnState) == 0) {
             add(x, y, blockType, turnState);
@@ -92,8 +98,7 @@ public class GamePanel extends JPanel {//客户端画面
         } else {
             y++;
         }
-
-
+        sendMsg();
         repaint();
     }
 
@@ -101,7 +106,7 @@ public class GamePanel extends JPanel {//客户端画面
         if (x >= 0) {
             x -= crash(x - 1, y, blockType, turnState);
         }
-
+        sendMsg();
         repaint();
     }
 
@@ -109,6 +114,7 @@ public class GamePanel extends JPanel {//客户端画面
         if (x < 8) {
             x += crash(x + 1, y, blockType, turnState);
         }
+        sendMsg();
         repaint();
     }
 
@@ -116,13 +122,13 @@ public class GamePanel extends JPanel {//客户端画面
         if (crash(x, y, blockType, (turnState + 1) % 4) == 1) {
             turnState = (turnState + 1) % 4;
         }
-
-
+        sendMsg();
         repaint();
     }
 
-    public void Stop() {
+    public void stop() {
 
+        sendMsg();
 //        try {
 //            dos.writeInt(196);
 //        } catch (IOException e) {
@@ -164,12 +170,7 @@ public class GamePanel extends JPanel {//客户端画面
 //                    e.printStackTrace();
 //                }
 
-                for (int d = b; d > 0; d--) {
-                    for (int e = 0; e < 11; e++) {
-                        map[0][e][d] = map[0][e][d - 1];
-                        map[1][e][d] = map[1][e][d - 1];
-                    }
-                }
+                delLine(b);
                 score += 100;
 //                try {
 //                    dos.writeInt(200 + score);
@@ -190,7 +191,25 @@ public class GamePanel extends JPanel {//客户端画面
 
     }
 
-    //判断是否发生碰撞
+    public void delLine(int line) {
+        sendMsg(line);
+        for (int i = line; i > 0; i--) {
+            for (int j = 0; j < 11; j++) {
+                map[0][j][i] = map[0][j][i - 1];
+                map[1][j][i] = map[1][j][i - 1];
+            }
+        }
+    }
+
+    /**
+     * 判断是否发生碰撞
+     *
+     * @param x
+     * @param y
+     * @param blockType
+     * @param turnState
+     * @return
+     */
     private int crash(int x, int y, int blockType, int turnState) {
         for (int a = 0; a < 4; a++) {
             for (int b = 0; b < 4; b++) {
@@ -221,48 +240,11 @@ public class GamePanel extends JPanel {//客户端画面
                     g.fillRect(i * 30, j * 30, 30, 30);
                 } else if (map[0][i][j] == 1) {
 
-                    if (map[1][i][j] == 0) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.red);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 1) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.orange);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 2) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.yellow);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 3) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.green);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 4) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.blue);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 5) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.magenta);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
-                    if (map[1][i][j] == 6) {
-                        g.setColor(Color.pink);
-                        g.drawRect(i * 30, j * 30, 30, 30);
-                        g.setColor(Color.gray);
-                        g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
-                    }
+                    paintBlock(i, j, map[1][i][j], g);
+                    g.setColor(Color.pink);
+                    g.drawRect(i * 30, j * 30, 30, 30);
+                    g.setColor(Color.red);
+                    g.fillRect(i * 30 + 1, j * 30 + 1, 29, 29);
                 }
             }
             for (int m = 0; m < 16; m++) {
@@ -287,5 +269,18 @@ public class GamePanel extends JPanel {//客户端画面
         g.setFont(new Font("宋体", Font.PLAIN, 30));
         g.setColor(Color.BLACK);
         g.drawString("下一个方块是", 405, 40);
+    }
+
+    /**
+     * @param x
+     * @param y
+     * @param index
+     * @param g
+     */
+    public void paintBlock(int x, int y, int index, Graphics g) {
+        g.setColor(Constant.BlockBack);
+        g.drawRect(x * Constant.BlockSize, y * Constant.BlockSize, Constant.BlockSize, Constant.BlockSize);
+        g.setColor(Constant.BlockColors[index]);
+        g.fillRect(x * Constant.BlockSize + 1, y * Constant.BlockSize + 1, Constant.BlockSize - 1, Constant.BlockSize - 1);
     }
 }

@@ -8,11 +8,16 @@ public class KeyListen implements KeyListener {
     private GamePanel gamePanel;
 
     KeyListen(GamePanel gamePanel) {
+        super();
         this.gamePanel = gamePanel;
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 gamePanel.turn();
@@ -27,16 +32,9 @@ public class KeyListen implements KeyListener {
                 gamePanel.right();
                 break;
         }
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 }

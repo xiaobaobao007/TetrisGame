@@ -1,11 +1,14 @@
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.*;
-
-import javax.swing.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Client extends JFrame {
  
@@ -85,7 +88,7 @@ public class Client extends JFrame {
   public void run() {
      try {
      newgame();
-     ss = new ServerSocket(7777);
+     ss = new ServerSocket(8083);
      socket=ss.accept();
      dis = new DataInputStream(socket.getInputStream());
         while(true){
@@ -261,7 +264,7 @@ public class Client extends JFrame {
  //游戏开始包
  public TetrisPanel(){
 	 try {
-		ss1 = new ServerSocket(8888);
+		ss1 = new ServerSocket(8084);
 		socket1=ss1.accept();
      dos = new DataOutputStream(socket1.getOutputStream());
 	} catch (IOException e) {

@@ -18,22 +18,23 @@ public class Server extends JFrame implements Runnable {
     private DataOutputStream dos;//数据传送
 
     private GamePanel mePanel;//自己的面板
-    private GamePanel enemyPanel;//对方的面板
+//    private GamePanel enemyPanel;//对方的面板
 
-    Server(){
+    Server() {
 
         init();//初始化
 
-        try {//初始化连接
-            serverSocket = new ServerSocket(Constant.ServerPort);
-            socket = serverSocket.accept();
-            dis = new DataInputStream(socket.getInputStream());
-            dos = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            System.out.println(Constant.ServerPort + "被占用，请设置新的端口号");
-            e.printStackTrace();
-        }
+//        try {//初始化连接
+//            serverSocket = new ServerSocket(Constant.ServerPort);
+//            socket = serverSocket.accept();
+//            dis = new DataInputStream(socket.getInputStream());
+//            dos = new DataOutputStream(socket.getOutputStream());
+//        } catch (IOException e) {
+//            System.out.println(Constant.ServerPort + "被占用，请设置新的端口号");
+//            e.printStackTrace();
+//        }
 
+        this.addKeyListener(new KeyListen(mePanel));
         this.setVisible(true);
     }
 
@@ -49,6 +50,9 @@ public class Server extends JFrame implements Runnable {
         this.setSize(Constant.JFrame_Width, Constant.JFrame_Height);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mePanel = new GamePanel(dos, false);
+//        enemyPanel = new GamePanel(null, false);
+        this.add(mePanel);
     }
 
     @Override

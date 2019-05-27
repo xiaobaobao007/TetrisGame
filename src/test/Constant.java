@@ -1,5 +1,7 @@
 package test;
 
+import java.awt.*;
+
 /**
  * 游戏中所需要的各种参数
  */
@@ -11,6 +13,13 @@ class Constant {
     static int JFrame_Height = 800;
     static int Panel_Width = 500;
     static int Panel_Height = JFrame_Height;
+
+    static int BlockSize = 30;
+    static Color MapLine = Color.LIGHT_GRAY;
+    static Color BlockBack = Color.pink;
+    static Color NextBlock = Color.blue;
+
+    static Color[] BlockColors = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta, Color.gray};
 
     /**
      * 俄罗斯方块七种类型和四种变换形态
