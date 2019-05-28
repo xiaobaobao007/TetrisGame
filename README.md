@@ -7,4 +7,4 @@
 
 
 
-![1](C:\Users\Administrator\Desktop\俄罗斯方块\src\img\1.png)
+![1](https://github.com/xiaobaobao007/TetrisGame/blob/master/src/img/1.png)
