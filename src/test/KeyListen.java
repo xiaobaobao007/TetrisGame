@@ -31,6 +31,9 @@ public class KeyListen implements KeyListener {
             case KeyEvent.VK_D:
                 gamePanel.right();
                 break;
+            case KeyEvent.VK_SPACE:
+                gamePanel.stop();
+                break;
         }
     }
 

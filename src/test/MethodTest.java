@@ -2,6 +2,10 @@ package test;
 
 import java.lang.reflect.InvocationTargetException;
 
+
+/**
+ * 测试方法映射
+ */
 class Calculator {
 
     public static double mul(double score1, double score2) {
@@ -16,8 +20,9 @@ class Calculator {
         System.out.println("OK");
     }
 
-    public void print1(int a,int b) {
-        System.out.println(a+b);print2();
+    public void print1(int a, int b) {
+        System.out.println(a + b);
+        print2();
     }
 
     public void print2() {
