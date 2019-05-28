@@ -3,6 +3,9 @@ package test;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * 键盘监听
+ */
 public class KeyListen implements KeyListener {
 
     private GamePanel gamePanel;

@@ -6,7 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-@SuppressWarnings("ALL")
+/**
+ * 客户端
+ */
 public class Client extends JFrame implements Runnable {
 
     private Socket socket;//连接服务器

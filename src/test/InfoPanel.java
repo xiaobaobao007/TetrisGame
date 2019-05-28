@@ -3,14 +3,17 @@ package test;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 游戏中间的信息面板
+ */
 public class InfoPanel extends JPanel {
 
     public static InfoPanel me = new InfoPanel();
 
-    static int meScore;
-    static int enemyScore;
-    static int lastBlockType;
-    static int lastTurnState;
+    static int meScore;//自己的分数
+    static int enemyScore;//队友的分数
+    static int lastBlockType;//提示的方块类型
+    static int lastTurnState;//提示的方块状态
     int x = 0;
     int y = 0;
 

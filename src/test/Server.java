@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 服务器
+ */
 public class Server extends JFrame implements Runnable {
 
     private ServerSocket serverSocket;//建立服务器连接

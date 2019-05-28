@@ -6,6 +6,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * 游戏的主面板
+ */
 public class GamePanel extends JPanel {//客户端画面
 
     private int id;

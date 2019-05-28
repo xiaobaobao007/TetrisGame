@@ -18,8 +18,8 @@ class Constant {
     static int Panel_Height = JFrame_Height;
     static int InfoPanel_Width = 280;//信息面板大小
     static int InfoPanel_Height = JFrame_Height;
-    static int z = 50;
-    static int x1 = 10;
+    static int z = 50;//面板之间距离
+    static int x1 = 10;//面板的位置
     static int y1 = 10;
     static int x2 = x1 + Panel_Width + z;
     static int y2 = y1;
