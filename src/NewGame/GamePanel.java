@@ -1,4 +1,4 @@
-package test;
+package NewGame;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package test;
+package NewGame;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

@@ -1,10 +1,11 @@
-package test;
+package NewGame;
 
 import java.lang.reflect.InvocationTargetException;
 
 
 /**
- * 测试方法映射
+ * 测试类
+ * 方法映射
  */
 class Calculator {
 
