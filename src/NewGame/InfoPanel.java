@@ -48,6 +48,6 @@ public class InfoPanel extends JPanel {
         g.drawString("您对手的分数是", x + 30, y + 370);
         g.drawString("enemyScore=" + enemyScore, x + 40, y + 400);
         g.setFont(new Font("宋体", Font.PLAIN, 15));
-        g.drawString("游戏已启动，可按空格键暂停或者继续", x + 0, y + 470);
+        g.drawString("游戏已启动，可按空格键暂停或者继续", x, y + 470);
     }
 }

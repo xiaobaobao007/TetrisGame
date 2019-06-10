@@ -254,19 +254,18 @@ public class GamePanel extends JPanel {//客户端画面
     //画图
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(new Color(153, 51, 205));
         for (int j = 0; j < 16; j++) {
             if (Constant.shapes[blockType][turnState][j] == 1) {
-                g.setColor(Color.pink);
+                g.setColor(Constant.BlockBack);
                 g.drawRect((j % 4 + x + 1) * 30, (j / 4 + y) * 30, 30, 30);
-                g.setColor(Color.BLUE);
+                g.setColor(Constant.NextBlock);
                 g.fillRect((j % 4 + x + 1) * 30 + 1, (j / 4 + y) * 30 + 1, 29, 29);
             }
         }
         for (int i = 0; i < 12; i++) {//走列
             for (int j = 0; j < 22; j++) {//走行
                 if (map[0][i][j] == -1) {
-                    g.setColor(Color.LIGHT_GRAY);
+                    g.setColor(Constant.MapLine);
                     g.fillRect(i * 30, j * 30, 30, 30);
                 } else if (map[0][i][j] == 1) {
                     paintBlock(i, j, map[1][i][j], g);
@@ -283,7 +282,7 @@ public class GamePanel extends JPanel {//客户端画面
      * @param index
      * @param g
      */
-    public void paintBlock(int x, int y, int index, Graphics g) {
+    private void paintBlock(int x, int y, int index, Graphics g) {
         g.setColor(Constant.BlockBack);
         g.drawRect(x * Constant.BlockSize, y * Constant.BlockSize, Constant.BlockSize, Constant.BlockSize);
         g.setColor(Constant.BlockColors[index]);

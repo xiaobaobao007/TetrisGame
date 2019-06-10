@@ -21,7 +21,7 @@ public class Server extends JFrame implements Runnable {
     private GamePanel mePanel;//自己的面板
     private GamePanel enemyPanel;//对方的面板
 
-    Server() {
+    private Server() {
 
         try {//初始化连接
             serverSocket = new ServerSocket(Constant.ServerPort);
@@ -42,14 +42,12 @@ public class Server extends JFrame implements Runnable {
 
     /**
      * 我是主方法
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new Server();
     }
 
-    public void init() {
+    private void init() {
         Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int JFrame_X = (int) (ScreenSize.getWidth() - Constant.JFrame_Width) / 2;
         int JFrame_Y = (int) (ScreenSize.getHeight() - Constant.JFrame_Height) / 2;
@@ -74,27 +72,39 @@ public class Server extends JFrame implements Runnable {
         Class<? extends GamePanel> panelClass = enemyPanel.getClass();
         while (true) {
             try {
-                if ((info = dis.readUTF()) != null) {
-                    String[] split = info.split("_");
-                    switch (split.length) {
-                        case 1:
-                            panelClass.getMethod(split[0]).invoke(enemyPanel, new Class[]{});//方法映射
-                            break;
-                        case 2:
-                            Integer num1 = Integer.valueOf(split[1]);
-                            panelClass.getMethod(split[0], new Class[]{int.class}).invoke(enemyPanel, new Object[]{num1});
-                            break;
-                        case 3:
-                            Integer num2 = Integer.valueOf(split[1]);
-                            Integer num3 = Integer.valueOf(split[2]);
-                            panelClass.getMethod(split[0], new Class[]{int.class, int.class}).invoke(enemyPanel, new Object[]{num2, num3});
-                            break;
-                    }
+                info = dis.readUTF();
+                String[] split = info.split("_");
+                switch (split.length) {
+                    case 1:
+                        panelClass.getMethod(split[0]).invoke(enemyPanel);//方法映射
+                        break;
+                    case 2:
+                        Integer num1 = Integer.valueOf(split[1]);
+                        panelClass.getMethod(split[0], new Class[]{int.class}).invoke(enemyPanel, num1);
+                        break;
+                    case 3:
+                        Integer num2 = Integer.valueOf(split[1]);
+                        Integer num3 = Integer.valueOf(split[2]);
+                        panelClass.getMethod(split[0], new Class[]{int.class, int.class}).invoke(enemyPanel, num2, num3);
+                        break;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("对方断开了连接");
+                destroy();
                 break;
             }
+        }
+    }
+
+    private void destroy() {
+        this.dispose();//窗体销毁
+        try {
+            dis.close();
+            dos.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
