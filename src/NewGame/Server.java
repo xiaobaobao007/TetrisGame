@@ -76,7 +76,7 @@ public class Server extends JFrame implements Runnable {
                 String[] split = info.split("_");
                 switch (split.length) {
                     case 1:
-                        panelClass.getMethod(split[0]).invoke(enemyPanel);//方法映射
+                        panelClass.getMethod(split[0]).invoke(enemyPanel);
                         break;
                     case 2:
                         Integer num1 = Integer.valueOf(split[1]);
@@ -86,6 +86,8 @@ public class Server extends JFrame implements Runnable {
                         Integer num2 = Integer.valueOf(split[1]);
                         Integer num3 = Integer.valueOf(split[2]);
                         panelClass.getMethod(split[0], new Class[]{int.class, int.class}).invoke(enemyPanel, num2, num3);
+                        break;
+                    default:
                         break;
                 }
             } catch (Exception e) {
