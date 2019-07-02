@@ -84,12 +84,12 @@ public class Client extends JFrame implements Runnable {
                         break;
                     case 2:
                         Integer num1 = Integer.valueOf(split[1]);
-                        panelClass.getMethod(split[0], new Class[]{int.class}).invoke(enemyPanel, num1);
+                        panelClass.getMethod(split[0], int.class).invoke(enemyPanel, num1);
                         break;
                     case 3:
                         Integer num2 = Integer.valueOf(split[1]);
                         Integer num3 = Integer.valueOf(split[2]);
-                        panelClass.getMethod(split[0], new Class[]{int.class, int.class}).invoke(enemyPanel, num2, num3);
+                        panelClass.getMethod(split[0], int.class, int.class).invoke(enemyPanel, num2, num3);
                         break;
                     default:
                         break;
