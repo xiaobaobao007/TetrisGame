@@ -1,11 +1,12 @@
 package NewGame;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+
+import javax.swing.*;
 
 /**
  * 客户端
@@ -48,6 +49,13 @@ public class Client extends JFrame implements Runnable {
      * 我是主方法
      */
     public static void main(String[] args) {
+		if (args.length > 0) {
+			Constant.ServerIp = args[0];
+			System.out.printf("您输入的ip地址为:%s\n", args[0]);
+		} else {
+			System.out.println("您默认了本地服务器连接\n");
+		}
+
         new Client();
     }
 
