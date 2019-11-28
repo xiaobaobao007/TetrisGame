@@ -1,10 +1,11 @@
 package NewGame;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
+
+import javax.swing.*;
 
 /**
  * 游戏的主面板
@@ -14,6 +15,8 @@ public class GamePanel extends JPanel {//客户端画面
     private int id;
 
     private boolean stop;
+    private long stopTime = 0L;
+
     private DataOutputStream dos;//数据发送
     private boolean canDos;//队友发来的操作后禁止再发送
     private int blockType, lastBlockType;//方块类型
@@ -43,7 +46,7 @@ public class GamePanel extends JPanel {//客户端画面
                 while (true) {
                     if (stop) {
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -145,7 +148,8 @@ public class GamePanel extends JPanel {//客户端画面
 
     //决定下一方块
     public void nextBlock(int a, int b) {
-        if (!canDos) add(x, y, blockType, turnState);//这个解决bug,不知道为什么队友的面板没有进入123行循环,这里给加上
+        //2019年11月28日21:30:11   调试bug,莫名其妙的好了!!!!
+        //if (!canDos) add(x, y, blockType, turnState);//这个解决bug,不知道为什么队友的面板没有进入123行循环,这里给加上
         blockType = a;
         turnState = b;
         if (canDos) {
@@ -187,11 +191,22 @@ public class GamePanel extends JPanel {//客户端画面
         repaint();
     }
 
+    /**
+     * 2019年11月28日21:34:54
+     * bug:本地暂停但是对方没有暂停
+     * 原因:对方调用了敌人的暂停,,,没有动自己的暂停
+     * 修改:stop方法特殊处理
+     */
     public void stop() {
+        long now = System.currentTimeMillis();
+        if (stopTime + 100 < now) {
+            stopTime = now;
+        } else {
+            return;
+        }
         sendMsg();
         stop = !stop;
     }
-
 
     //消行
     private void tryDelLine() {
@@ -233,12 +248,6 @@ public class GamePanel extends JPanel {//客户端画面
 
     /**
      * 判断是否发生碰撞
-     *
-     * @param x
-     * @param y
-     * @param blockType
-     * @param turnState
-     * @return
      */
     private int crash(int x, int y, int blockType, int turnState) {
         for (int a = 0; a < 4; a++) {
@@ -276,11 +285,6 @@ public class GamePanel extends JPanel {//客户端画面
 
     /**
      * 绘制每个方块
-     *
-     * @param x
-     * @param y
-     * @param index
-     * @param g
      */
     private void paintBlock(int x, int y, int index, Graphics g) {
         g.setColor(Constant.BlockBack);

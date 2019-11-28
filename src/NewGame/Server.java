@@ -1,12 +1,13 @@
 package NewGame;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import javax.swing.*;
 
 /**
  * 服务器
@@ -25,9 +26,11 @@ public class Server extends JFrame implements Runnable {
 
         try {//初始化连接
             serverSocket = new ServerSocket(Constant.ServerPort);
+            System.out.println("服务器<" + Constant.ServerIp + ">启动成功,等待客户端连接");
             socket = serverSocket.accept();
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
+            System.out.println("连接成功,游戏开始启动");
         } catch (IOException e) {
             System.out.println(Constant.ServerPort + "被占用，请设置新的端口号");
             e.printStackTrace();
@@ -76,7 +79,11 @@ public class Server extends JFrame implements Runnable {
                 String[] split = info.split("_");
                 switch (split.length) {
                     case 1:
-                        panelClass.getMethod(split[0]).invoke(enemyPanel);
+                        if ("stop".equals(split[0])) {
+                            mePanel.getClass().getMethod(split[0]).invoke(mePanel);
+                        } else {
+                            panelClass.getMethod(split[0]).invoke(enemyPanel);
+                        }
                         break;
                     case 2:
                         Integer num1 = Integer.valueOf(split[1]);

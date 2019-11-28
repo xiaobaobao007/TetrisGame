@@ -53,7 +53,7 @@ public class Client extends JFrame implements Runnable {
 			Constant.ServerIp = args[0];
 			System.out.printf("您输入的ip地址为:%s\n", args[0]);
 		} else {
-			System.out.println("您默认了本地服务器连接\n");
+            System.out.println("您默认了本地服务器连接");
 		}
 
         new Client();
@@ -88,7 +88,11 @@ public class Client extends JFrame implements Runnable {
                 String[] split = info.split("_");
                 switch (split.length) {
                     case 1:
-                        panelClass.getMethod(split[0]).invoke(enemyPanel);
+                        if ("stop".equals(split[0])) {
+                            mePanel.getClass().getMethod(split[0]).invoke(mePanel);
+                        } else {
+                            panelClass.getMethod(split[0]).invoke(enemyPanel);
+                        }
                         break;
                     case 2:
                         Integer num1 = Integer.valueOf(split[1]);
