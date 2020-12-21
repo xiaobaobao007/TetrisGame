@@ -8,39 +8,43 @@ import java.awt.event.KeyListener;
  */
 public class KeyListen implements KeyListener {
 
-    private GamePanel gamePanel;
+	private final GamePanel gamePanel;
 
-    KeyListen(GamePanel gamePanel) {
-        super();
-        this.gamePanel = gamePanel;
-    }
+	KeyListen(GamePanel gamePanel) {
+		super();
+		this.gamePanel = gamePanel;
+	}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                gamePanel.turn();
-                break;
-            case KeyEvent.VK_A:
-                gamePanel.left();
-                break;
-            case KeyEvent.VK_S:
-                gamePanel.down();
-                break;
-            case KeyEvent.VK_D:
-                gamePanel.right();
-                break;
-            case KeyEvent.VK_SPACE:
-                gamePanel.stop();
-                break;
-        }
-    }
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+			case KeyEvent.VK_W:
+				gamePanel.turn();
+				break;
+			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_A:
+				gamePanel.left();
+				break;
+			case KeyEvent.VK_DOWN:
+			case KeyEvent.VK_S:
+				gamePanel.down();
+				break;
+			case KeyEvent.VK_RIGHT:
+			case KeyEvent.VK_D:
+				gamePanel.right();
+				break;
+			case KeyEvent.VK_SPACE:
+				gamePanel.stop();
+				break;
+		}
+	}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
 }
