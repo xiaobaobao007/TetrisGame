@@ -218,13 +218,13 @@ public class GamePanel extends JPanel {//客户端画面
 			}
 			if (c == 10) {
 				delLine(b);
-				addMeScore(id, 100);
+				addMeScore(100);
 				delay -= 30;//每消除一行增加难度
 			}
 		}
 	}
 
-	public void addMeScore(int id, int score) {
+	public void addMeScore(int score) {
 		if (canDos) {
 			InfoPanel.meScore += score;
 		} else {
