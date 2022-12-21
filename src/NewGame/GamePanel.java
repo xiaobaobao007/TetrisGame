@@ -1,11 +1,10 @@
 package NewGame;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
-
-import javax.swing.*;
 
 /**
  * 游戏的主面板
@@ -223,11 +222,10 @@ public class GamePanel extends JPanel {//客户端画面
 				delay -= 30;//每消除一行增加难度
 			}
 		}
-
 	}
 
 	public void addMeScore(int id, int score) {
-		if (this.id == id) {
+		if (canDos) {
 			InfoPanel.meScore += score;
 		} else {
 			InfoPanel.enemyScore += score;
