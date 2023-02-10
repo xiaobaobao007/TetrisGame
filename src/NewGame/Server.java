@@ -64,10 +64,10 @@ public class Server extends JFrame implements Runnable {
 		this.setSize(Constant.JFrame_Width, Constant.JFrame_Height);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mePanel = new GamePanel(dos, true, Constant.ServerId);
+		mePanel = new GamePanel(dos, true);
 		mePanel.setLocation(Constant.x1, Constant.y1);
 		this.add(InfoPanel.me);
-		enemyPanel = new GamePanel(null, false, Constant.ClientId);
+		enemyPanel = new GamePanel(null, false);
 		enemyPanel.setLocation(Constant.x3, Constant.y3);
 		this.add(mePanel);
 		this.add(enemyPanel);

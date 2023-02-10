@@ -7,16 +7,14 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * 游戏的主面板
+ * 单个玩家的panel 游戏组成由三个panel（两个gamepanel和一个infopanel）组成一个frame
  */
 public class GamePanel extends JPanel {//客户端画面
 
-	private final int id;
+	private boolean stop;//当前游戏是否暂停的标记
+	private long stopTime = 0L;//游戏暂停的时间
 
-	private boolean stop;
-	private long stopTime = 0L;
-
-	private final DataOutputStream dos;//数据发送
+	private final DataOutputStream dos;//数据发送，当玩家产生操作后,通过此流输出给对方
 	private final boolean canDos;//队友发来的操作后禁止再发送
 	private int blockType, lastBlockType;//方块类型
 	private int turnState, lastTurnState;//旋转状态
@@ -25,22 +23,22 @@ public class GamePanel extends JPanel {//客户端画面
 	private final int[][][] map = new int[2][13][23];//地图：12列22行。为防止越界，数组开成：13列23行
 	private int delay;//游戏方块下落速度
 
-	private final Random random;
+	private final Random random;//随机数的产生
 
-	GamePanel(DataOutputStream dos, boolean canDos, int id) {
+	GamePanel(DataOutputStream dos, boolean canDos) {
 		this.dos = dos;
 		this.canDos = canDos;
-		this.id = id;
-		this.setSize(Constant.Panel_Width, Constant.Panel_Height);
+		this.setSize(Constant.Panel_Width, Constant.Panel_Height);//设置此panel的大小
 		stop = false;
 		random = new Random();
 		if (canDos) {
-			blockType = random.nextInt(7);
-			turnState = random.nextInt(4);
-			lastBlockType = random.nextInt(7);
-			lastTurnState = random.nextInt(4);
+			blockType = random.nextInt(7);//随机产生一个第一个下落的方块类型
+			turnState = random.nextInt(4);//随机产生一个第一个下落的方块旋转方向
+			lastBlockType = random.nextInt(7);//随机产生一个第二个下落的方块类型
+			lastTurnState = random.nextInt(4);//随机产生一个第二个下落的方块旋转方向
 
-			newGame(blockType, turnState);
+			newGame(blockType, turnState);//初始化游戏
+
 			new Thread(() -> {
 				while (true) {
 					if (stop) {
@@ -50,7 +48,7 @@ public class GamePanel extends JPanel {//客户端画面
 							e.printStackTrace();
 						}
 					} else {
-						down();
+						down();//游戏运行中自动执行下落操作
 						try {
 							Thread.sleep(delay);
 						} catch (InterruptedException e) {
@@ -62,16 +60,19 @@ public class GamePanel extends JPanel {//客户端画面
 		}
 	}
 
+	/**
+	 * 信息发送的入口
+	 */
 	private void sendMsg(int... parm) {
 		if (!canDos || dos == null) {
 			return;
 		}
-		StringBuilder methodName = new StringBuilder(Thread.currentThread().getStackTrace()[2].getMethodName());
+		StringBuilder methodName = new StringBuilder(Thread.currentThread().getStackTrace()[2].getMethodName());//写入方法名
 		for (int i : parm) {
-			methodName.append("_").append(i);
+			methodName.append("_").append(i);//写入参数，并下划线分割
 		}
 		try {
-			dos.writeUTF(methodName.toString());
+			dos.writeUTF(methodName.toString());//输出给对方
 		} catch (IOException e) {
 			System.out.println("断开连接");
 			System.exit(0);
@@ -84,12 +85,12 @@ public class GamePanel extends JPanel {//客户端画面
 		for (int i = 0; i < 12; i++) {//走列
 			for (int j = 0; j < 21; j++) {//走行
 				if (i == 0 || i == 11) {//3为界面边框的格
-					map[0][i][j] = -1;//
+					map[0][i][j] = -1;//设置边界
 				} else {
-					map[0][i][j] = 0;
+					map[0][i][j] = 0;//设置空白区域
 				}
 			}
-			map[0][i][21] = -1;
+			map[0][i][21] = -1;//设置边界
 		}
 		blockType = a;
 		turnState = b;
@@ -122,6 +123,7 @@ public class GamePanel extends JPanel {//客户端画面
 		System.exit(0);
 	}
 
+	//下落中方块添加到地图中
 	private void add(int x, int y, int blockType, int turnState) {
 		sendMsg(x, y, blockType, turnState);
 		for (int a = 0; a < 4; a++) {
@@ -135,15 +137,16 @@ public class GamePanel extends JPanel {//客户端画面
 		tryDelLine();
 	}
 
+	//下落
 	public void down() {
 		sendMsg();
-		if (crash(x, y + 1, blockType, turnState) == 0) {
+		if (crash(x, y + 1, blockType, turnState) == 0) {//尝试进行消除
 			add(x, y, blockType, turnState);
-			nextBlock(lastBlockType, lastTurnState);
+			nextBlock(lastBlockType, lastTurnState);//生成新的方块
 		} else {
-			y++;
+			y++;//下落中方块y坐标加1
 		}
-		repaint();
+		repaint();//重新刷新界面
 	}
 
 	//决定下一方块
@@ -151,8 +154,8 @@ public class GamePanel extends JPanel {//客户端画面
 		blockType = a;
 		turnState = b;
 		if (canDos) {
-			lastBlockType = random.nextInt(7);
-			lastTurnState = random.nextInt(4);
+			lastBlockType = random.nextInt(7);//随机产生新的方块类型
+			lastTurnState = random.nextInt(4);//随机产生新的方块旋转方向
 			InfoPanel.lastBlockType = lastBlockType;
 			InfoPanel.lastTurnState = lastTurnState;
 			InfoPanel.me.repaint();
@@ -161,12 +164,13 @@ public class GamePanel extends JPanel {//客户端画面
 		x = 4;
 		y = 0;
 		if (canDos) {
-			if (crash(x, y, blockType, turnState) == 0) {
+			if (crash(x, y, blockType, turnState) == 0) {//产生新的方块时，如果发生了碰撞，则游戏结束
 				endGame(0);
 			}
 		}
 	}
 
+	//向左移动
 	public void left() {
 		if (x >= 0) {
 			x -= crash(x - 1, y, blockType, turnState);
@@ -175,6 +179,7 @@ public class GamePanel extends JPanel {//客户端画面
 		repaint();
 	}
 
+	//向右移动
 	public void right() {
 		if (x < 8) {
 			x += crash(x + 1, y, blockType, turnState);
@@ -183,6 +188,7 @@ public class GamePanel extends JPanel {//客户端画面
 		repaint();
 	}
 
+	//旋转方向
 	public void turn() {
 		if (crash(x, y, blockType, (turnState + 1) % 4) == 1) {
 			turnState = (turnState + 1) % 4;
@@ -224,6 +230,7 @@ public class GamePanel extends JPanel {//客户端画面
 		}
 	}
 
+	//增加我的分数
 	public void addMeScore(int score) {
 		if (canDos) {
 			InfoPanel.meScore += score;
@@ -236,6 +243,7 @@ public class GamePanel extends JPanel {//客户端画面
 		}
 	}
 
+	//删除一行
 	public void delLine(int line) {
 		for (int i = line; i > 0; i--) {
 			for (int j = 0; j < 11; j++) {
@@ -251,7 +259,7 @@ public class GamePanel extends JPanel {//客户端画面
 	private int crash(int x, int y, int blockType, int turnState) {
 		for (int a = 0; a < 4; a++) {
 			for (int b = 0; b < 4; b++) {
-				if ((Constant.shapes[blockType][turnState][a * 4 + b] & map[0][x + b + 1][y + a]) == 1) {
+				if ((Constant.shapes[blockType][turnState][a * 4 + b] & map[0][x + b + 1][y + a]) == 1) {//如果都为1则发生碰撞
 					return 0;//碰撞
 				}
 			}
@@ -262,6 +270,8 @@ public class GamePanel extends JPanel {//客户端画面
 	//画图
 	public void paint(Graphics g) {
 		super.paint(g);
+
+		//绘画正在下落的方块
 		for (int j = 0; j < 16; j++) {
 			if (Constant.shapes[blockType][turnState][j] == 1) {
 				g.setColor(Constant.BlockBack);
@@ -270,9 +280,12 @@ public class GamePanel extends JPanel {//客户端画面
 				g.fillRect((j % 4 + x + 1) * 30 + 1, (j / 4 + y) * 30 + 1, 29, 29);
 			}
 		}
+
+		//绘画地图
 		for (int i = 0; i < 12; i++) {//走列
 			for (int j = 0; j < 22; j++) {//走行
 				if (map[0][i][j] == -1) {
+					//边界
 					g.setColor(Constant.MapLine);
 					g.fillRect(i * 30, j * 30, 30, 30);
 				} else if (map[0][i][j] == 1) {

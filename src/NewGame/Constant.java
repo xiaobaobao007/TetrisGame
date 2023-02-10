@@ -7,12 +7,9 @@ import java.awt.*;
  */
 class Constant {
 
-	static int ServerId = 1;//用于区别服务器
-	static int ClientId = 2;//用于区别客户端
-
-	static String ServerIp = "localhost";//服务器地址
+	static String ServerIp = "localhost";//服务器地址！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	static int ServerPort = 8081;//服务器开放端口号
-	static int BlockDelay = 1000;//方块下落延迟
+	static int BlockDelay = 1000;//方块下落的速度（毫秒）
 	static int Panel_Width = 380;//游戏面板大小
 	static int JFrame_Height = 710;
 	static int Panel_Height = JFrame_Height;
@@ -33,7 +30,7 @@ class Constant {
 	static Color BlockBack = Color.pink;//方块背景色
 	static Color NextBlock = Color.blue;//下个提示方块颜色
 
-	static Color[] BlockColors = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta, Color.gray};
+	static Color[] BlockColors = {Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.magenta, Color.gray};//七种方块对应的不同的颜色
 
 	/**
 	 * 俄罗斯方块七种类型和四种变换形态
